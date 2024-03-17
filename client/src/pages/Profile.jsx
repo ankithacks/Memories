@@ -2,6 +2,8 @@ import React,{useEffect, useRef, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {getStorage, ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
 import { app } from '../firebase';
+import {Link} from 'react-router-dom'
+
 import {
   updateUserStart,
   updateUserSuccess,
@@ -142,6 +144,9 @@ export default function Profile() {
           {loading ? "Loading...." : "Update"}
           
         </button>
+        <Link className='bg-green-700 mt-5 rounded-lg p-4 uppercase text-white text-center' to={"/create-listing"}>
+          Create Listing
+        </Link>
       </form>
       <div className='flex justify-between mt-5'>
       <span
