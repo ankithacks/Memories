@@ -26,8 +26,11 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const dispatch = useDispatch();
+  const [userListings, setUserListings]=useState([
 
+  ])
+  const dispatch = useDispatch();
+  const [showError, setShowError]=useState(false)
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
@@ -115,7 +118,39 @@ export default function Profile() {
       dispatch(signOutUserFailure(error.message))    
     }
   }
+  const handleShowListings=async()=>{
+    try {
+      setShowError(false)
+      const res=await fetch(`/api/user/listings/${currentUser._id}`)
+      const data=await res.json();
+      if(data.success === false){
+        setShowError(true)
+        return
+      }
 
+      setUserListings(data)
+    } catch (error) {
+      setShowError(true)
+    }
+  }
+
+  const handleListingDelete=async(listingId)=>{
+    try {
+      const res=await fetch(`/api/listing/delete/${listingId}`, {
+        method: 'DELETE'
+      })
+      const data=await res.json()
+
+      if(data.success === false){
+        console.log(data.message)
+        return
+      }
+
+      setUserListings((prev)=>prev.filter((listing)=>listing._id !== listingId))
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-medium text-center my-10'>Your Profile</h1>
@@ -159,6 +194,26 @@ export default function Profile() {
       </div>
       <p className='text-red-600 mt-6'>{error ? error : '' }</p>
       <p className='text-green-500 mt-5'>{updateSuccess ? "successfully updated" : ""}</p>
+      <button onClick={handleShowListings} className='bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white 
+        rounded-lg p-4 uppercase  mt-5 w-full hover:bg-green-400'>Manage and Show Your Listings</button>
+        <p>{showError ? 'Error showing listings' : ''}</p>
+        
+        {userListings && userListings.length > 0 && 
+        userListings.map((listing)=>(
+          <div className='border rounded-lg p-3 flex justify-between items-center gap-4' key={listing._id}>
+            <Link to={`/listing/${listing._id}`}>
+              <img src={listing.imageUrls[0]} alt="listing images" className='h-16 w-16 object-contain' />
+              <Link className='flex-1 text-slate-600 font-semibold hover:underline truncate' to={`/listing/${listing._id}`}>
+                <p >{listing.name}</p>
+              </Link>
+            </Link>
+            <div className='flex flex-col items-center'>
+              <button onClick={()=>handleListingDelete(listing._id)} className='text-red-600 '>DELETE</button>
+              <button className='text-green-600 '>EDIT</button>
+            </div>
+          </div>
+        ))
+        }
     </div>
   )
 }
