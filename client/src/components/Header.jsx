@@ -1,10 +1,30 @@
-import React from 'react'
-import {Link} from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import {Link, useNavigate} from 'react-router-dom'
 import {useSelector} from 'react-redux'
+import { FaSearch } from "react-icons/fa";
 
 export default function Header() {
-    const {currentUser}= useSelector(state=> state.user)
-  return (
+  const { currentUser } = useSelector((state) => state.user);
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('searchTerm', searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+    
+
+    useEffect(() => {
+      const urlParams=new URLSearchParams(location.search)
+      const searchTermFromUrl=urlParams.get('searchTerm')
+      if(searchTermFromUrl){
+        setSearchTerm(searchTermFromUrl)
+      }
+    }, [location.search])
+    
+    return (
     <header className='bg-transparent shadow-md rounded-3xl mx-7'>
         <div className="flex justify-between items-center max-w-6xl mx-auto p-5">
         <Link to='/'>
@@ -13,10 +33,22 @@ export default function Header() {
             <span className='text-violet-600'>Estate</span>
         </h1>
         </Link>
-        <form className='bg-slate-100 p-3 rounded-lg'>
-            <input type='text' placeholder='Search...' className='bg-transparent focus:outline-none w-24 sm:w-64'/>
+        <form
+          onSubmit={handleSubmit}
+          className='bg-slate-100 p-3 rounded-lg flex items-center'
+        >
+          <input
+            type='text'
+            placeholder='Search...'
+            className='bg-transparent focus:outline-none w-24 sm:w-64'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button>
+            <FaSearch className='text-slate-600' />
+          </button>
         </form>
-        <ul className='flex gap-8 cursor-pointer '>
+        <ul className='flex gap-8 cursor-pointer '> 
             <li className='hidden sm:inline  text-slate-700 hover:text-purple-500'><Link to='/'>Home</Link></li>
             <li className=' text-slate-700 hover:text-purple-500'>
                 <Link to='/about'>About</Link>
