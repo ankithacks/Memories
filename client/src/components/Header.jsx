@@ -29,8 +29,8 @@ export default function Header() {
         <div className="flex justify-between items-center max-w-6xl mx-auto p-5">
         <Link to='/'>
         <h1 className='font-bold text-sm sm:text-xl flex flex-wrap'>
-            <span className='text-slate-500'>ankur</span>
-            <span className='text-violet-600'>Estate</span>
+            <span className='text-slate-500'>Memo</span>
+            <span className='text-violet-600 underline'>ries</span>
         </h1>
         </Link>
         <form
@@ -49,7 +49,7 @@ export default function Header() {
           </button>
         </form>
         <ul className='flex gap-8 cursor-pointer '> 
-            <li className='hidden sm:inline  text-slate-700 hover:text-purple-500'><Link to='/'>Home</Link></li>
+            {/* <li className='hidden sm:inline  text-slate-700 hover:text-purple-500'><Link to='/'>Home</Link></li> */}
             <li className=' text-slate-700 hover:text-purple-500'>
                 <Link to='/about'>About</Link>
             </li>
